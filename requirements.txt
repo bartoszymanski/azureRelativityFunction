@@ -1,0 +1,4 @@
+sqlalchemy
+pymysql
+sendgrid
+azure.cosmos
