@@ -85,7 +85,7 @@ def main(request):
     cosmos_container = None
     try:
         conn = get_db_connection()
-        cosmos_container = get_cosmos_client()
+        #cosmos_container = get_cosmos_client()
         users = fetch_users_and_balances(conn)
 
         if not users:
