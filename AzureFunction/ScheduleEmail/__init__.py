@@ -45,7 +45,7 @@ def fetch_users_and_balances(conn):
         SELECT
             u.username AS nick,
             u.email_address AS email,
-            GROUP_CONCAT(CONCAT(c.currency_code, ': ', c.sum_amount) SEPARATOR ', ') AS waluty_zsumowane
+            STRING_AGG(CONCAT(c.currency_code, ': ', c.sum_amount), ', ') AS waluty_zsumowane
         FROM user u
         JOIN (
             SELECT w.user_id, w.currency_code, SUM(w.amount) AS sum_amount
@@ -53,7 +53,7 @@ def fetch_users_and_balances(conn):
             GROUP BY w.user_id, w.currency_code
         ) c ON u.id = c.user_id
         GROUP BY u.id, u.username, u.email_address;
-    """)
+        """)
 
     result = conn.execute(query)
     rows = result.mappings().all()
