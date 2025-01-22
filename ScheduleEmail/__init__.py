@@ -7,6 +7,7 @@ from azure.cosmos import CosmosClient, PartitionKey, exceptions
 import urllib
 import azure.functions as func
 import logging
+import datetime
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
@@ -81,8 +82,13 @@ def send_email(sendgrid_client, to_email, amount_summary):
     response = sendgrid_client.send(message)
     return response.status_code
 
-@app.route(route="http_trigger")
-def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
+def main(mytimer: func.TimerRequest) -> None:
+    utc_timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+    if mytimer.past_due:
+        logging.info('The timer is past due!')
+
+    logging.info('Python timer trigger function ran at %s', utc_timestamp)
     sendgrid_api_key = os.getenv('SENDGRID_API_KEY')
     if not sendgrid_api_key:
         print("SENDGRID_API_KEY not set.")
