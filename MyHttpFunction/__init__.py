@@ -5,8 +5,10 @@ from sendgrid.helpers.mail import Mail
 from sqlalchemy.sql import text
 from azure.cosmos import CosmosClient, PartitionKey, exceptions
 import urllib
+import azure.functions as func
 import logging
-from azure.functions import HttpRequest, HttpResponse
+
+app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 def get_db_connection():
     db_connection_string = os.getenv('DB_URI')
@@ -79,7 +81,8 @@ def send_email(sendgrid_client, to_email, amount_summary):
     response = sendgrid_client.send(message)
     return response.status_code
 
-def main(req: HttpRequest) -> HttpResponse:
+@app.route(route="http_trigger")
+def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
     sendgrid_api_key = os.getenv('SENDGRID_API_KEY')
     if not sendgrid_api_key:
         print("SENDGRID_API_KEY not set.")
