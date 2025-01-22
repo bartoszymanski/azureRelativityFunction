@@ -8,7 +8,7 @@ import urllib
 import azure.functions as func
 import logging
 
-app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
+app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
 def get_db_connection():
     db_connection_string = os.getenv('DB_URI')
