@@ -4,14 +4,17 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from sqlalchemy.sql import text
 from azure.cosmos import CosmosClient, PartitionKey, exceptions
+import urllib
 
 def get_db_connection():
-    db_uri = os.getenv('DB_URI')
-    if not db_uri:
+    db_connection_string = os.getenv('DB_URI')
+    if not db_connection_string:
         raise ValueError("DB_URI environment variable not set.")
 
     try:
-        engine = sqlalchemy.create_engine(db_uri, pool_size=5, pool_timeout=30, pool_recycle=1800)
+        params = urllib.parse.quote_plus(db_connection_string)
+        sqlalchemy_url = f"mysql+pyodbc:///?odbc_connect={params}"
+        engine = sqlalchemy.create_engine(sqlalchemy_url, pool_size=5, pool_timeout=30, pool_recycle=1800)
         conn = engine.connect()
         return conn
     except Exception as e:
