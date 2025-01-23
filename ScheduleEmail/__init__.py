@@ -1,4 +1,10 @@
 import os
+import subprocess
+import sys
+
+# Install dependencies
+subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "./requirements.txt"])
+import os
 import sqlalchemy
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
