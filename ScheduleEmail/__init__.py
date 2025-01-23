@@ -37,9 +37,16 @@ def get_cosmos_client():
     if not all([cosmos_endpoint, cosmos_key, cosmos_database, cosmos_container]):
         raise ValueError("Cosmos DB environment variables not set.")
 
-    client = cosmos.CosmosClient(cosmos_endpoint, cosmos_key)
-    database = client.get_database_client(cosmos_database)
-    container = database.get_container_client(cosmos_container)
+    client = cosmos.CosmosClient(cosmos_endpoint, credential=cosmos_key)
+    try:
+        database = client.create_database_if_not_exists(cosmos_database)
+    except cosmos.exceptions.CosmosResourceExistsError as e:
+        database = client.get_database_client(cosmos_database)
+
+    try:
+        container = database.create_container_if_not_exists(id=cosmos_container, partition_key=cosmos.PartitionKey(path="/email", kind="Hash"))
+    except cosmos.exceptions.CosmosResourceExistsError as e:
+        container = database.get_container_client(cosmos_container)
     return container
 
 def fetch_users_and_balances(conn):
@@ -64,7 +71,6 @@ def fetch_users_and_balances(conn):
 def save_summary_to_cosmosdb(container, email, balances_summary):
     try:
         document = {
-            "id": email,
             "email": email,
             "balances_summary": balances_summary
         }
