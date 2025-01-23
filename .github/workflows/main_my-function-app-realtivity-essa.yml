@@ -34,8 +34,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Verify installed packages
-        run: pip list
+      # Optional: Add step to run tests here
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
@@ -51,7 +50,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-
+    
+    
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -59,8 +59,8 @@ jobs:
           name: python-app
 
       - name: Unzip artifact for deployment
-        run: unzip release.zip
-
+        run: unzip release.zip     
+        
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
         id: deploy-to-function
@@ -68,4 +68,4 @@ jobs:
           app-name: 'my-function-app-realtivity-essa'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_98B2CA7A7E5A49C49C8B1A8BEA1CB78C }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_556A83CD9ED94D3DB11BF9D56CE1593D }}
