@@ -32,19 +32,19 @@ def get_db_connection():
         print(f"Error connecting to the database: {e}")
         raise
 
-def get_cosmos_client():
-    cosmos_endpoint = os.getenv('COSMOS_ENDPOINT')
-    cosmos_key = os.getenv('COSMOS_KEY')
-    cosmos_database = os.getenv('COSMOS_DATABASE')
-    cosmos_container = os.getenv('COSMOS_CONTAINER')
+# def get_cosmos_client():
+#     cosmos_endpoint = os.getenv('COSMOS_ENDPOINT')
+#     cosmos_key = os.getenv('COSMOS_KEY')
+#     cosmos_database = os.getenv('COSMOS_DATABASE')
+#     cosmos_container = os.getenv('COSMOS_CONTAINER')
 
-    if not all([cosmos_endpoint, cosmos_key, cosmos_database, cosmos_container]):
-        raise ValueError("Cosmos DB environment variables not set.")
+#     if not all([cosmos_endpoint, cosmos_key, cosmos_database, cosmos_container]):
+#         raise ValueError("Cosmos DB environment variables not set.")
 
-    client = CosmosClient(cosmos_endpoint, cosmos_key)
-    database = client.get_database_client(cosmos_database)
-    container = database.get_container_client(cosmos_container)
-    return container
+#     client = CosmosClient(cosmos_endpoint, cosmos_key)
+#     database = client.get_database_client(cosmos_database)
+#     container = database.get_container_client(cosmos_container)
+#     return container
 
 def fetch_users_and_balances(conn):
     query = text("""
