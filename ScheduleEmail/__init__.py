@@ -25,10 +25,10 @@ def get_db_connection():
         sqlalchemy_url = f"mysql+pyodbc:///?odbc_connect={params}"
         engine = sqlalchemy.create_engine(sqlalchemy_url, pool_size=5, pool_timeout=30, pool_recycle=1800)
         conn = engine.connect()
-        print("Connected to the database.")
+        logging.info("Connected to the database.")
         return conn
     except Exception as e:
-        print(f"Error connecting to the database: {e}")
+        logging.info(f"Error connecting to the database: {e}")
         raise
 
 # def get_cosmos_client():
@@ -73,9 +73,9 @@ def fetch_users_and_balances(conn):
 #             "balances_summary": balances_summary
 #         }
 #         container.upsert_item(document)
-#         print(f"Saved summary for {email} to Cosmos DB.")
+#         logging.info(f"Saved summary for {email} to Cosmos DB.")
 #     except exceptions.CosmosHttpResponseError as e:
-#         print(f"Failed to save summary to Cosmos DB: {str(e)}")
+#         logging.info(f"Failed to save summary to Cosmos DB: {str(e)}")
 
 def send_email(sendgrid_client, to_email, amount_summary):
     message = Mail(
@@ -96,7 +96,7 @@ def main(myTimer: func.TimerRequest) -> None:
     logging.info('Python timer trigger function ran at %s', utc_timestamp)
     sendgrid_api_key = os.getenv('SENDGRID_API_KEY')
     if not sendgrid_api_key:
-        print("SENDGRID_API_KEY not set.")
+        logging.info("SENDGRID_API_KEY not set.")
 
     sendgrid_client = SendGridAPIClient(sendgrid_api_key)
     conn = None
@@ -105,20 +105,20 @@ def main(myTimer: func.TimerRequest) -> None:
         conn = get_db_connection()
         #cosmos_container = get_cosmos_client()
         users = fetch_users_and_balances(conn)
-        print(f"Found {len(users)} users.")
+        logging.info(f"Found {len(users)} users.")
         if not users:
-            print("No users found.")
+            logging.info("No users found.")
             return ("No users to send emails to.", 200)
 
         for username, email, amount_summary in users:
 
             status = send_email(sendgrid_client, email, amount_summary)
             if status != 202:
-                print(f"Failed to send email to {email}, status code: {status}")
-            print(f"Sent email to {email}.")
+                logging.info(f"Failed to send email to {email}, status code: {status}")
+            logging.info(f"Sent email to {email}.")
             #save_summary_to_cosmosdb(cosmos_container, username, email, amount_summary)
     except Exception as e:
-        print(f"Error in main function: {str(e)}")
+        logging.info(f"Error in main function: {str(e)}")
     finally:
         if conn:
             conn.close()
