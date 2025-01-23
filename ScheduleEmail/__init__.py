@@ -22,7 +22,7 @@ def get_db_connection():
 
     try:
         params = urllib.parse.quote_plus(db_connection_string)
-        sqlalchemy_url = f"mysql+pyodbc:///?odbc_connect={params}"
+        sqlalchemy_url = "mssql+pyodbc:///?odbc_connect=%s" % params
         engine = sqlalchemy.create_engine(sqlalchemy_url, pool_size=5, pool_timeout=30, pool_recycle=1800)
         conn = engine.connect()
         logging.info("Connected to the database.")
