@@ -4,7 +4,6 @@ import sys
 
 # Install dependencies
 subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "./requirements.txt"])
-import os
 import sqlalchemy
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -51,7 +50,7 @@ def fetch_users_and_balances(conn):
             u.username AS nick,
             u.email_address AS email,
             STRING_AGG(CONCAT(c.currency_code, ': ', c.sum_amount), ', ') AS waluty_zsumowane
-        FROM user u
+        FROM [user] u
         JOIN (
             SELECT w.user_id, w.currency_code, SUM(w.amount) AS sum_amount
             FROM wallet w
