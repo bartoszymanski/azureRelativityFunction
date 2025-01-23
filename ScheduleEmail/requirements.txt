@@ -1,6 +1,6 @@
 sqlalchemy
 pymysql
 sendgrid
-azure.cosmos
+azure-cosmos
 pyodbc
 azure-functions
