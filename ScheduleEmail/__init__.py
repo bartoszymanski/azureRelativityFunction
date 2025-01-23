@@ -9,7 +9,7 @@ import sqlalchemy
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from sqlalchemy.sql import text
-from azure.cosmos import CosmosClient, PartitionKey, exceptions
+#from azure.cosmos import CosmosClient, PartitionKey, exceptions
 import urllib
 import azure.functions as func
 import logging
