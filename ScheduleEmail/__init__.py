@@ -38,15 +38,19 @@ def get_cosmos_client():
         raise ValueError("Cosmos DB environment variables not set.")
 
     client = cosmos.CosmosClient(cosmos_endpoint, credential=cosmos_key)
+    logging.info("Connected to Cosmos DB.")
     try:
         database = client.create_database_if_not_exists(cosmos_database)
+        logging.info(f"Created database {cosmos_database}.")
     except cosmos.exceptions.CosmosResourceExistsError as e:
         database = client.get_database_client(cosmos_database)
-
+        logging.info(f"Database {cosmos_database} already exists.")
     try:
         container = database.create_container_if_not_exists(id=cosmos_container, partition_key=cosmos.PartitionKey(path="/email", kind="Hash"))
+        logging.info(f"Created container {cosmos_container}.")
     except cosmos.exceptions.CosmosResourceExistsError as e:
         container = database.get_container_client(cosmos_container)
+        logging.info(f"Container {cosmos_container} already exists.")
     return container
 
 def fetch_users_and_balances(conn):
