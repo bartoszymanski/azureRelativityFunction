@@ -34,7 +34,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # Optional: Add step to run tests here
+      - name: List dependencies
+        run: pip list
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
