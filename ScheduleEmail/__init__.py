@@ -109,7 +109,7 @@ def main(myTimer: func.TimerRequest) -> None:
             logging.info("No users found.")
             return ("No users to send emails to.", 200)
 
-        for username, email, amount_summary in users:
+        for email, amount_summary in users:
 
             status = send_email(sendgrid_client, email, amount_summary)
             if status != 202:
