@@ -15,8 +15,6 @@ import azure.functions as func
 import logging
 import datetime
 
-app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
-
 def get_db_connection():
     db_connection_string = os.getenv('DB_URI')
     if not db_connection_string:
@@ -65,18 +63,18 @@ def fetch_users_and_balances(conn):
     rows = result.mappings().all()
     return [(row['email'], row['waluty_zsumowane']) for row in rows]
 
-def save_summary_to_cosmosdb(container, username, email, balances_summary):
-    try:
-        document = {
-            "id": email,
-            "username": username,
-            "email": email,
-            "balances_summary": balances_summary
-        }
-        container.upsert_item(document)
-        print(f"Saved summary for {email} to Cosmos DB.")
-    except exceptions.CosmosHttpResponseError as e:
-        print(f"Failed to save summary to Cosmos DB: {str(e)}")
+# def save_summary_to_cosmosdb(container, username, email, balances_summary):
+#     try:
+#         document = {
+#             "id": email,
+#             "username": username,
+#             "email": email,
+#             "balances_summary": balances_summary
+#         }
+#         container.upsert_item(document)
+#         print(f"Saved summary for {email} to Cosmos DB.")
+#     except exceptions.CosmosHttpResponseError as e:
+#         print(f"Failed to save summary to Cosmos DB: {str(e)}")
 
 def send_email(sendgrid_client, to_email, amount_summary):
     message = Mail(
@@ -88,10 +86,10 @@ def send_email(sendgrid_client, to_email, amount_summary):
     response = sendgrid_client.send(message)
     return response.status_code
 
-def main(mytimer: func.TimerRequest) -> None:
+def main(myTimer: func.TimerRequest) -> None:
     utc_timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
-    if mytimer.past_due:
+    if myTimer.past_due:
         logging.info('The timer is past due!')
 
     logging.info('Python timer trigger function ran at %s', utc_timestamp)
@@ -118,7 +116,7 @@ def main(mytimer: func.TimerRequest) -> None:
             if status != 202:
                 print(f"Failed to send email to {email}, status code: {status}")
 
-            save_summary_to_cosmosdb(cosmos_container, username, email, amount_summary)
+            #save_summary_to_cosmosdb(cosmos_container, username, email, amount_summary)
 
         return ("Emails sent and summaries saved successfully", 200)
     except Exception as e:
