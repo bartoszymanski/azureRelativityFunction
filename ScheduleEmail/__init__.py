@@ -25,6 +25,7 @@ def get_db_connection():
         sqlalchemy_url = f"mysql+pyodbc:///?odbc_connect={params}"
         engine = sqlalchemy.create_engine(sqlalchemy_url, pool_size=5, pool_timeout=30, pool_recycle=1800)
         conn = engine.connect()
+        print("Connected to the database.")
         return conn
     except Exception as e:
         print(f"Error connecting to the database: {e}")
@@ -104,7 +105,7 @@ def main(myTimer: func.TimerRequest) -> None:
         conn = get_db_connection()
         #cosmos_container = get_cosmos_client()
         users = fetch_users_and_balances(conn)
-
+        print(f"Found {len(users)} users.")
         if not users:
             print("No users found.")
             return ("No users to send emails to.", 200)
@@ -114,7 +115,7 @@ def main(myTimer: func.TimerRequest) -> None:
             status = send_email(sendgrid_client, email, amount_summary)
             if status != 202:
                 print(f"Failed to send email to {email}, status code: {status}")
-
+            print(f"Sent email to {email}.")
             #save_summary_to_cosmosdb(cosmos_container, username, email, amount_summary)
     except Exception as e:
         print(f"Error in main function: {str(e)}")
