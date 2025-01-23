@@ -96,7 +96,6 @@ def main(myTimer: func.TimerRequest) -> None:
     sendgrid_api_key = os.getenv('SENDGRID_API_KEY')
     if not sendgrid_api_key:
         print("SENDGRID_API_KEY not set.")
-        return ("Internal server error", 500)
 
     sendgrid_client = SendGridAPIClient(sendgrid_api_key)
     conn = None
@@ -117,11 +116,8 @@ def main(myTimer: func.TimerRequest) -> None:
                 print(f"Failed to send email to {email}, status code: {status}")
 
             #save_summary_to_cosmosdb(cosmos_container, username, email, amount_summary)
-
-        return ("Emails sent and summaries saved successfully", 200)
     except Exception as e:
         print(f"Error in main function: {str(e)}")
-        return ("An error occurred", 500)
     finally:
         if conn:
             conn.close()
