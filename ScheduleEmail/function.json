@@ -1,4 +1,5 @@
 {
+  "scriptFile": "__init__.py",
   "bindings": [
     {
       "schedule": "0 */1 * * * *",
@@ -6,6 +7,15 @@
       "name": "myTimer",
       "type": "timerTrigger",
       "direction": "in"
+  },
+  {
+    "type": "cosmosDB",
+    "direction": "out",
+    "name": "doc",
+    "databaseName": "%COSMOS_DATABASE%",
+    "collectionName": "%COSMOS_CONTAINER%",
+    "createIfNotExists": "true",
+    "connectionStringSetting": "%COSMOS_ENDPOINT%"
   }
   ]
 }
