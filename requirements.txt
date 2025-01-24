@@ -1,6 +1,5 @@
-sqlalchemy
-pymysql
-sendgrid
-azure-cosmos
-pyodbc
-azure-functions
+sqlalchemy==1.4.32
+sendgrid==6.11.0
+azure-cosmos==4.9.0
+pyodbc==5.2.0
+azure-functions==1.21.3

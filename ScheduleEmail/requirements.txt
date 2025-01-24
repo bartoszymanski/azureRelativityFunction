@@ -1,6 +1,0 @@
-sqlalchemy
-pymysql
-sendgrid
-azure-cosmos
-pyodbc
-azure-functions

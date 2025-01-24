@@ -1,7 +1,7 @@
 import os
 import subprocess
 import sys
-subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "./requirements.txt"])
+#subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "./requirements.txt"])
 import sqlalchemy
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
