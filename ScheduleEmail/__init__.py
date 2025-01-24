@@ -105,10 +105,8 @@ def main(myTimer: func.TimerRequest, doc: func.Out[func.Document]) -> None:
 
     sendgrid_client = SendGridAPIClient(sendgrid_api_key)
     conn = None
-    cosmos_container = None
     try:
         conn = get_db_connection()
-        cosmos_container = get_cosmos_client()
         users = fetch_users_and_balances(conn)
         logging.info(f"Found {len(users)} users.")
         if not users:
