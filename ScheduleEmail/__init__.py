@@ -27,31 +27,6 @@ def get_db_connection():
         logging.info(f"Error connecting to the database: {e}")
         raise
 
-# def get_cosmos_client():
-#     cosmos_endpoint = os.getenv('COSMOS_ENDPOINT')
-#     cosmos_key = os.getenv('COSMOS_KEY')
-#     cosmos_database = os.getenv('COSMOS_DATABASE')
-#     cosmos_container = os.getenv('COSMOS_CONTAINER')
-
-#     if not all([cosmos_endpoint, cosmos_key, cosmos_database, cosmos_container]):
-#         raise ValueError("Cosmos DB environment variables not set.")
-
-#     client = cosmos.CosmosClient(cosmos_endpoint, credential=cosmos_key)
-#     logging.info("Connected to Cosmos DB.")
-#     try:
-#         database = client.create_database_if_not_exists(cosmos_database)
-#         logging.info(f"Created database {cosmos_database}.")
-#     except cosmos.exceptions.CosmosResourceExistsError as e:
-#         database = client.get_database_client(cosmos_database)
-#         logging.info(f"Database {cosmos_database} already exists.")
-#     try:
-#         container = database.create_container_if_not_exists(id=cosmos_container, partition_key=cosmos.PartitionKey(path="/email", kind="Hash"))
-#         logging.info(f"Created container {cosmos_container}.")
-#     except cosmos.exceptions.CosmosResourceExistsError as e:
-#         container = database.get_container_client(cosmos_container)
-#         logging.info(f"Container {cosmos_container} already exists.")
-#     return container
-
 def fetch_users_and_balances(conn):
     query = text("""
         SELECT
@@ -70,17 +45,6 @@ def fetch_users_and_balances(conn):
     result = conn.execute(query)
     rows = result.mappings().all()
     return [(row['email'], row['waluty_zsumowane']) for row in rows]
-
-# def save_summary_to_cosmosdb(container, email, balances_summary):
-#     try:
-#         document = {
-#             "email": email,
-#             "balances_summary": balances_summary
-#         }
-#         container.upsert_item(document)
-#         logging.info(f"Saved summary for {email} to Cosmos DB.")
-#     except cosmos.exceptions.CosmosHttpResponseError as e:
-#         logging.info(f"Failed to save summary to Cosmos DB: {str(e)}")
 
 def send_email(sendgrid_client, to_email, amount_summary):
     message = Mail(
@@ -114,10 +78,6 @@ def main(myTimer: func.TimerRequest, doc: func.Out[func.Document]) -> None:
             return ("No users to send emails to.", 200)
 
         for email, amount_summary in users:
-
-            # status = send_email(sendgrid_client, email, amount_summary)
-            # if status != 202:
-            #     logging.info(f"Failed to send email to {email}, status code: {status}")
             logging.info(f"Sent email to {email}.")
             emails_list = func.DocumentList()
             email = {
@@ -126,6 +86,7 @@ def main(myTimer: func.TimerRequest, doc: func.Out[func.Document]) -> None:
             }
             emails_list.append(func.Document.from_dict(email))
             doc.set(emails_list)
+            logging.info(f"CosmosDB document created for {email}.")
     except Exception as e:
         logging.info(f"Error in main function: {str(e)}")
     finally:

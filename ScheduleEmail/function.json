@@ -15,7 +15,7 @@
     "databaseName": "%COSMOS_DATABASE%",
     "collectionName": "%COSMOS_CONTAINER%",
     "createIfNotExists": "true",
-    "connectionStringSetting": "%COSMOS_ENDPOINT%"
+    "connectionStringSetting": "COSMOS_ENDPOINT"
   }
   ]
 }
