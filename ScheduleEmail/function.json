@@ -12,8 +12,8 @@
     "type": "cosmosDB",
     "direction": "out",
     "name": "doc",
-    "databaseName": "%COSMOS_DATABASE%",
-    "containerName": "%COSMOS_CONTAINER%",
+    "databaseName": "cosmosdb-relativity-sqldb",
+    "containerName": "cosmosdb-relativity-container",
     "createIfNotExists": "true",
     "connection": "CosmosDB"
   }
