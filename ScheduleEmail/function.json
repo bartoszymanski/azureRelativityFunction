@@ -13,7 +13,7 @@
     "direction": "out",
     "name": "doc",
     "databaseName": "%COSMOS_DATABASE%",
-    "collectionName": "%COSMOS_CONTAINER%",
+    "containerName": "%COSMOS_CONTAINER%",
     "createIfNotExists": "true",
     "connection": "CosmosDB"
   }
