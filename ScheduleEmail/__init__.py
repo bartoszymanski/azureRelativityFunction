@@ -79,15 +79,17 @@ def main(myTimer: func.TimerRequest, doc: func.Out[func.Document]) -> None:
             return ("No users to send emails to.", 200)
 
         for email, amount_summary in users:
+            status = send_email(sendgrid_client, email, amount_summary)
+            if status != 202:
+                logging.info(f"Failed to send email to {email}, status code: {status}")
             logging.info(f"Sent email to {email}.")
-            emails_list = func.DocumentList()
-            email = {
+            document = {
                 "id": str(uuid.uuid4()),
                 "email": email,
-                "balances_summary": amount_summary
+                "balances_summary": amount_summary,
+                "timestamp": utc_timestamp
             }
-            emails_list.append(func.Document.from_dict(email))
-            doc.set(emails_list)
+            doc.set(func.Document.from_dict(document))
             logging.info(f"CosmosDB document created for {email}.")
     except Exception as e:
         logging.info(f"Error in main function: {str(e)}")
