@@ -10,6 +10,7 @@ import urllib
 import azure.functions as func
 import logging
 import datetime
+import uuid
 
 def get_db_connection():
     db_connection_string = os.getenv('DB_URI')
@@ -81,6 +82,7 @@ def main(myTimer: func.TimerRequest, doc: func.Out[func.Document]) -> None:
             logging.info(f"Sent email to {email}.")
             emails_list = func.DocumentList()
             email = {
+                "id": str(uuid.uuid4()),
                 "email": email,
                 "balances_summary": amount_summary
             }
