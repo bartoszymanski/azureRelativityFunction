@@ -68,4 +68,4 @@ jobs:
           app-name: 'my-function-app-realtivity-essa'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_17750570F45F44A78E5A740D26650DB2 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3DDAD2DB8BC44649B1BABAA4294E5B81 }}
